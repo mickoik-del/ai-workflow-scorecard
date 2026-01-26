@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Workflow Risk Report</title>
+    <style>
+        #app-container { max-width: 700px; margin: 50px auto; font-family: sans-serif; line-height: 1.6; }
+        .result-card { border: 2px solid #007bff; padding: 40px; border-radius: 12px; background: #f0f7ff; }
+        .asset-box { background: white; padding: 20px; border: 1px solid #ddd; margin-top: 20px; border-radius: 8px; }
+        .download-btn { display: inline-block; background: #28a745; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div class="result-card">
+        <h1 id="outcome-title">Analyzing your results...</h1>
+        <p id="outcome-text">Please wait while we generate your guidance.</p>
+        
+        <div id="asset-container" class="asset-box" style="display:none;">
+            <h3>Your Recommended Resource:</h3>
+            <p id="asset-description"></p>
+            <a id="download-link" href="#" class="download-btn">Download Guide (PDF)</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Get user data from memory [cite: 108, 156]
+    const user = JSON.parse(localStorage.getItem('scorecard_user')) || { industry: 'GEN' };
+    const risk = localStorage.getItem('risk_classification'); // HIGH, LOW, or COMPLETION
+    const industry = user.industry || 'GEN';
+
+    // 2. Determine Asset Names using your PRD Naming Convention [cite: 191, 213]
+    // Example: HIGH-ONEPAGER-BANKING
+    const assetName = `${risk}-ONEPAGER-${industry}`;
+    const fallbackName = `${risk}-ONEPAGER-GEN`;
+
+    // 3. UI Content Logic (This is the "Container" being replaced) [cite: 15, 198]
+    const outcomeContent = {
+        'COMPLETION': {
+            title: "Completion-Heavy Risk Identified",
+            text: "Your workflows are mission-critical. Even without AI, the lack of a completion layer creates significant liability."
+        },
+        'LOW': {
+            title: "Some Level of Workflow Risk",
+            text: "AI is touching your workflows, but your current configuration has manageable risk levels."
+        },
+        'HIGH': {
+            title: "High Systemic Risk Detected",
+            text: "Your AI-initiated workflows involve regulated actions or high-consequence state changes."
+        }
+    };
+
+    function renderResults() {
+        const content = outcomeContent[risk];
+        document.getElementById('outcome-title').innerText = content.title;
+        document.getElementById('outcome-text').innerText = content.text;
+        
+        // Show the asset box
+        document.getElementById('asset-container').style.display = 'block';
+        document.getElementById('asset-description').innerText = `Referencing Asset: ${assetName}`;
+        
+        // In a real app, this link would come from your spreadsheet
+        document.getElementById('download-link').innerText = `Get ${industry} Risk Guide`;
+        
+        // TRIGGER HUBSPOT [cite: 105, 174, 183]
+        sendToHubSpot(user, risk, assetName);
+    }
+
+    function sendToHubSpot(user, risk, asset) {
+        console.log("SENDING TO HUBSPOT SINK...");
+        console.log("Contact:", user.email);
+        console.log("Lifecycle Stage: Signal");
+        console.log("Note:", `User classified as ${risk}. Sent asset: ${asset}`);
+        // This is where your Vercel Serverless function will eventually live!
+    }
+
+    renderResults();
+</script>
+</body>
+</html>
