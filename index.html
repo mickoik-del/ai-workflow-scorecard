@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workflow Risk Qualification</title>
+    <style>
+        #app-container { max-width: 800px; margin: 50px auto; font-family: sans-serif; }
+        .vibe-placeholder { border: 2px dashed #ccc; padding: 40px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="content-slot" class="vibe-placeholder">
+            <h1>Workflow Risk Qualification & Routing System</h1>
+            <p>Diagnostic and educational system for customer-facing workflows.</p>
+            <button onclick="startQualification()">Start Qualification</button>
+        </div>
+    </div>
+
+    <script>
+        function startQualification() {
+            // This is where we will trigger Step 1: Context Collection
+            console.log("Starting the vibe check...");
+            window.location.href = "context.html"; 
+        }
+    </script>
+</body>
+</html>
