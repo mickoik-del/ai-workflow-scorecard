@@ -1,5 +1,7 @@
-module.exports = async (req, res) => {
-    // Only allow POST requests
+export default async function handler(req, res) {
+    // 1. Log the incoming request so we can see it in Vercel Logs
+    console.log("Bridge Triggered. Payload received:", req.body);
+
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
@@ -7,8 +9,12 @@ module.exports = async (req, res) => {
     const { email, industry, title, risk, assetName, message } = req.body;
     const hubspotToken = process.env.HUBSPOT_ACCESS_TOKEN;
 
+    if (!hubspotToken) {
+        console.error("CRITICAL: HubSpot Token is missing from Vercel Environment Variables!");
+        return res.status(500).json({ error: "Server Configuration Error" });
+    }
+
     try {
-        // This "upsert" call creates the contact if new, or updates if they exist
         const response = await fetch('https://api.hubapi.com/crm/v3/objects/contacts/upsert', {
             method: 'POST',
             headers: {
@@ -22,21 +28,26 @@ module.exports = async (req, res) => {
                     email: email,
                     industry: industry,
                     jobtitle: title,
-                    lifecyclestage: 'subscriber', 
-                    scorecard_risk_level: risk,   
-                    scorecard_message: message,    
-                    scorecard_asset: assetName     
+                    lifecyclestage: 'subscriber',
+                    scorecard_risk_level: risk,
+                    scorecard_message: message,
+                    scorecard_asset: assetName
                 }
             })
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const errorData = await response.json();
-            return res.status(response.status).json(errorData);
+            console.error("HubSpot API Error:", data);
+            return res.status(response.status).json(data);
         }
 
+        console.log("HubSpot Sync Success:", data);
         return res.status(200).json({ success: true });
+
     } catch (error) {
-        return res.status(500).json({ error: 'Internal Server Error', details: error.message });
+        console.error("Internal Bridge Error:", error.message);
+        return res.status(500).json({ error: error.message });
     }
 }
