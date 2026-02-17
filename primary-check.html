@@ -1,45 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Workflow Check</title>
+    <meta charset="UTF-8"><title>AI Check</title>
     <style>
-        #app-container { max-width: 600px; margin: 50px auto; font-family: sans-serif; line-height: 1.6; text-align: center; }
-        .question-box { background: #f8f9fa; border: 1px solid #dee2e6; padding: 40px; border-radius: 8px; margin-top: 20px; }
-        .btn-group { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
-        button { padding: 15px 40px; border: none; border-radius: 4px; cursor: pointer; font-size: 18px; font-weight: bold; }
-        .btn-yes { background-color: #28a745; color: white; }
-        .btn-no { background-color: #6c757d; color: white; }
-        button:hover { opacity: 0.9; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; text-align: center; padding-top: 100px; }
+        .box { max-width: 500px; margin: 0 auto; background: white; padding: 50px; border-radius: 12px; border: 1px solid #e5e7eb; }
+        button { padding: 15px 40px; margin: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: #2563EB; color: white; }
     </style>
 </head>
 <body>
-
-    <div id="app-container">
-        <h2>Section 1: AI Involvement</h2>
-        <div class="question-box">
-            <p style="font-size: 20px;">Does AI touch customer-facing workflows?</p>
-            
-            <div class="btn-group">
-                <button class="btn-yes" onclick="handleResponse(true)">YES</button>
-                <button class="btn-no" onclick="handleResponse(false)">NO</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function handleResponse(isAI) {
-            // Store the answer so the engine knows which path to follow [cite: 33-36]
-            localStorage.setItem('q1_ai_touches', isAI);
-
-            if (isAI) {
-                // Route to the 19-question diagnostic [cite: 41, 120]
-                window.location.href = "diagnostic.html";
-            } else {
-                // Route to the Non-AI "Completion Check" [cite: 39, 75-77]
-                window.location.href = "completion-check.html";
-            }
-        }
-    </script>
+<div class="box">
+    <h2>Does AI touch customer-facing workflows?</h2>
+    <button onclick="handle(true)">YES</button>
+    <button onclick="handle(false)" style="background:#6b7280;">NO</button>
+</div>
+<script>
+    function handle(isAI) {
+        localStorage.setItem('total_score', 0); // Reset score
+        window.location.href = isAI ? "diagnostic.html" : "completion-check.html";
+    }
+</script>
 </body>
 </html>
