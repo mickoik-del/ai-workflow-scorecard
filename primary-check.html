@@ -10,13 +10,17 @@
 </head>
 <body>
 <div class="box">
+    <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin-bottom:20px; width:150px;">
     <h2>Does AI touch customer-facing workflows?</h2>
-    <button onclick="handle(true)">YES</button>
-    <button onclick="handle(false)" style="background:#6b7280;">NO</button>
+    <div style="margin-top:30px;">
+        <button onclick="handle(true)">YES</button>
+        <button onclick="handle(false)" style="background:#6b7280;">NO</button>
+    </div>
 </div>
 <script>
     function handle(isAI) {
-        localStorage.setItem('total_score', 0); // Reset score
+        localStorage.setItem('q1_ai_touches', isAI);
+        // If YES, go to 19 questions. If NO, go to completion check.
         window.location.href = isAI ? "diagnostic.html" : "completion-check.html";
     }
 </script>
