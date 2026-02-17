@@ -125,6 +125,12 @@
 </div>
 
 <script>
+    // Prevent back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+        history.go(1);
+    };
+
     // These match your PRD exactly [cite: 127-155]
     const questions = [
         { q: "Does the workflow require identity verification?", w: 1 },

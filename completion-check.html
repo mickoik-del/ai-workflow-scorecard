@@ -136,6 +136,12 @@
 </div>
 
 <script>
+    // Prevent back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+        history.go(1);
+    };
+
     let answers = { q1a: null, q1b: null };
 
     function setAnswer(question, value, buttonElement) {

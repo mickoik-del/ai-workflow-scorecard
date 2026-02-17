@@ -175,6 +175,14 @@
 </head>
 <body>
 
+<script>
+    // Prevent back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+        history.go(1);
+    };
+</script>
+
     <div class="container">
         <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
         <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>

@@ -153,6 +153,12 @@
 </div>
 
 <script>
+    // Prevent back button
+    history.pushState(null, null, location.href);
+    window.onpopstate = function() {
+        history.go(1);
+    };
+
     function saveAndContinue() {
         const emailInput = document.getElementById('user-email').value.trim().toLowerCase();
         const industry = document.getElementById('user-industry').value;
