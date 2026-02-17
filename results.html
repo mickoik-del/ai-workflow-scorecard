@@ -1,105 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Your Workflow Risk Report</title>
+    <meta charset="UTF-8"><title>Results</title>
     <style>
-        #app-container { max-width: 700px; margin: 50px auto; font-family: sans-serif; line-height: 1.6; color: #333; }
-        .result-card { border: 2px solid #007bff; padding: 40px; border-radius: 12px; background: #f0f7ff; text-align: center; }
-        .asset-box { background: white; padding: 20px; border: 1px solid #ddd; margin-top: 30px; border-radius: 8px; }
-        .download-btn { display: inline-block; background: #28a745; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; }
-        .status-msg { margin-top: 20px; font-size: 0.85em; color: #666; }
+        body { font-family: 'Inter', sans-serif; text-align: center; padding: 50px; }
+        .hero { padding: 60px; border-radius: 16px; color: white; margin-bottom: 30px; }
+        .high { background: #B91C1C; } .low { background: #2563EB; }
     </style>
 </head>
 <body>
-
-<div id="app-container">
-    <div class="result-card">
-        <h1 id="outcome-title">Generating your report...</h1>
-        <p id="outcome-text">Analyzing your diagnostic inputs...</p>
-        
-        <div id="asset-container" class="asset-box" style="display:none;">
-            <h3>Your Recommended Resource:</h3>
-            <p id="asset-description"></p>
-            <a id="download-link" href="#" class="download-btn">Download PDF Guide</a>
-            <p class="status-msg" id="sync-status">Syncing with HubSpot...</p>
+    <div id="loading"><h2>Syncing results with HubSpot...</h2></div>
+    <div id="content" style="display:none;">
+        <div id="hero-box" class="hero">
+            <h1 id="title"></h1>
+            <p id="desc"></p>
         </div>
+        <button onclick="window.print()">Download Report</button>
     </div>
-</div>
-
 <script>
-    async function initResults() {
-        // 1. Get user data from memory (LocalStorage)
-        const user = JSON.parse(localStorage.getItem('scorecard_user')) || { industry: 'OTHER', email: 'unknown' };
+    async function init() {
+        const user = JSON.parse(localStorage.getItem('scorecard_user'));
         const risk = localStorage.getItem('risk_classification') || 'LOW';
-        const industry = user.industry || 'OTHER';
-
-        // 2. Determine Asset Names per your naming convention
-        const assetName = `${risk}-ONEPAGER-${industry}`;
-
-        // 3. Define content based on the risk classification
-        const outcomeContent = {
-            'COMPLETION': {
-                title: "Completion-Heavy Risk Identified",
-                text: "Your workflows are mission-critical. Even without AI, the lack of a structured completion layer creates significant liability."
-            },
-            'LOW': {
-                title: "Moderate Workflow Risk",
-                text: "AI is touching your workflows, but your current configuration shows manageable risk levels."
-            },
-            'HIGH': {
-                title: "High Systemic Risk Detected",
-                text: "Critical Alert: Your AI-initiated workflows involve regulated actions or high-consequence state changes without sufficient guardrails."
-            }
-        };
-
-        // 4. Update the UI
-        const content = outcomeContent[risk];
-        document.getElementById('outcome-title').innerText = content.title;
-        document.getElementById('outcome-text').innerText = content.text;
-        document.getElementById('asset-container').style.display = 'block';
-        document.getElementById('asset-description').innerText = `Resource: ${assetName}`;
-        document.getElementById('download-link').innerText = `Get ${industry} Risk Analysis`;
-
-        // 5. Trigger the real HubSpot sync
-        await sendToHubSpot(user, risk, assetName, content.text);
-    }
-
-    async function sendToHubSpot(user, risk, asset, messageText) {
-        const statusEl = document.getElementById('sync-status');
         
-        const payload = {
-            email: user.email,
-            industry: user.industry,
-            title: user.title,
-            risk: risk,
-            assetName: asset,
-            message: messageText
-        };
+        await fetch('/api/submit-to-hubspot', {
+            method: 'POST',
+            body: JSON.stringify({ email: user.email, industry: user.industry, risk })
+        });
 
-        try {
-            const response = await fetch('/api/submit-to-hubspot', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                statusEl.innerText = "✓ Results synced to HubSpot";
-                console.log("HubSpot Sync Successful");
-            } else {
-                const errorData = await response.json();
-                statusEl.innerText = "✕ Sync failed (check Vercel logs)";
-                console.error("HubSpot Sync Error:", errorData);
-            }
-        } catch (err) {
-            statusEl.innerText = "✕ Connection error";
-            console.error("Network Error:", err);
-        }
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('hero-box').className = 'hero ' + risk.toLowerCase();
+        document.getElementById('title').innerText = risk + " RISK DETECTED";
+        document.getElementById('desc').innerText = "We've mapped your " + user.industry + " workflow risks.";
     }
-
-    // Start the process
-    initResults();
+    init();
 </script>
 </body>
 </html>
