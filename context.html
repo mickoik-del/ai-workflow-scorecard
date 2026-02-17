@@ -2,88 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Step 1: Your Context</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About You - Workflow Risk Audit</title>
     <style>
-        #app-container { max-width: 600px; margin: 50px auto; font-family: sans-serif; line-height: 1.6; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        button { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; width: 100%; }
-        button:hover { background-color: #0056b3; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; padding: 60px 24px; }
+    .form-card { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; border: 1px solid #e5e7eb; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #d1d5db; border-radius: 8px; }
+    button { width: 100%; background: #2563EB; color: white; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .error { color: #dc2626; font-size: 14px; display: none; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-
-    <div id="app-container">
-        <h2>Tell us about yourself</h2>
-        <p>This information helps us route you to the correct guidance.</p>
-        
-        <div class="form-group">
-            <label for="industry">Industry</label>
-            <select id="industry">
-                <option value="BANKING">Banking</option>
-                <option value="INSURANCE">Insurance</option>
-                <option value="TELCO">Telco</option>
-                <option value="UTILITIES">Utilities</option>
-                <option value="HEALTHCARE">Healthcare</option>
-                <option value="MORTGAGE">Mortgage</option>
-                <option value="TRAVEL">Travel & eCommerce</option>
-                <option value="OTHER">Other</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" placeholder="e.g. Digital Leader" required>
-        </div>
-
-        <div class="form-group">
-            <label for="email">Corporate Email</label>
-            <input type="email" id="email" placeholder="you@company.com" required>
-        </div>
-
-        <button onclick="saveAndContinue()">Next: Workflow Check</button>
+<div class="form-card">
+    <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin-bottom:20px;">
+    <h4>Workflow Risk Audit</h4>
+    <div class="form-group">
+        <label>Industry</label>
+        <select id="user-industry">
+            <option value="">Select one...</option>
+            <option value="BANKING">Banking</option><option value="INSURANCE">Insurance</option>
+            <option value="TELCO">Telco</option><option value="HEALTHCARE">Healthcare</option>
+            <option value="OTHER">Other</option>
+        </select>
     </div>
-
-    <script>
-        function saveAndContinue() {
-            const emailInput = document.getElementById('email').value.trim().toLowerCase();
-            const industry = document.getElementById('industry').value;
-            const title = document.getElementById('title').value;
-
-            // List of common personal email providers to block
-            const personalProviders = [
-                'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 
-                'icloud.com', 'me.com', 'aol.com', 'msn.com', 'live.com'
-            ];
-            
-            // Check if the domain is personal
-            const isPersonal = personalProviders.some(domain => emailInput.endsWith(domain));
-
-            // Basic validation check
-            if (emailInput === "" || !emailInput.includes('@')) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-
-            // ENFORCEMENT: Redirect to retry page if personal email is detected 
-            if (isPersonal) {
-                window.location.href = "retry-email.html";
-                return;
-            }
-
-            // SAVE DATA: Use LocalStorage so we can access it on the result page later
-            const userData = { 
-                industry: industry, 
-                title: title, 
-                email: emailInput 
-            };
-            
-            localStorage.setItem('scorecard_user', JSON.stringify(userData));
-            
-            // ROUTE: Move to Primary Question (Q1) 
-            window.location.href = "primary-check.html";
+    <div class="form-group">
+        <label>Corporate Email</label>
+        <input type="email" id="user-email" placeholder="you@company.com">
+        <div id="email-error" class="error">Please use a professional corporate email.</div>
+    </div>
+    <button onclick="saveAndContinue()">Next: Workflow Check</button>
+</div>
+<script>
+    function saveAndContinue() {
+        const email = document.getElementById('user-email').value.trim().toLowerCase();
+        const industry = document.getElementById('user-industry').value;
+        const personal = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+        
+        if (!industry || !email.includes('@') || personal.some(d => email.endsWith(d))) {
+            document.getElementById('email-error').style.display = 'block';
+            return;
         }
-    </script>
+        localStorage.setItem('scorecard_user', JSON.stringify({ email, industry }));
+        window.location.href = "primary-check.html";
+    }
+</script>
 </body>
 </html>
