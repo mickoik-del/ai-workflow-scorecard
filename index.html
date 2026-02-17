@@ -2,28 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Workflow Risk Qualification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Risk Audit - Callvu</title>
     <style>
-        #app-container { max-width: 800px; margin: 50px auto; font-family: sans-serif; }
-        .vibe-placeholder { border: 2px dashed #ccc; padding: 40px; text-align: center; }
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      .cvau-wrap * { box-sizing: border-box; margin: 0; padding: 0; }
+      .cvau-wrap { font-family: 'Inter', sans-serif; max-width: 860px; margin: 10px auto; padding: 0 24px 80px; }
+      .cvau-hero { background: linear-gradient(150deg, #1A3C6E 0%, #1E4FA0 55%, #5B3FA6 100%); border-radius: 16px; padding: 64px 56px 60px; margin-bottom: 40px; color: white; }
+      .cvau-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: #FFFFFF; color: #000000 !important; font-weight: 600; padding: 15px 28px; border-radius: 8px; text-decoration: none; }
+      /* ... Rest of Chelsea's CSS ... */
     </style>
 </head>
 <body>
-
-    <div id="app-container">
-        <div id="content-slot" class="vibe-placeholder">
-            <h1>Workflow Risk Qualification & Routing System</h1>
-            <p>Diagnostic and educational system for customer-facing workflows.</p>
-            <button onclick="startQualification()">Start Qualification</button>
-        </div>
-    </div>
-
-    <script>
-        function startQualification() {
-            // This is where we will trigger Step 1: Context Collection
-            console.log("Starting the vibe check...");
-            window.location.href = "context.html"; 
-        }
-    </script>
+<div class="cvau-wrap">
+  <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin:20px;">
+  <div class="cvau-hero">
+    <h1>AI Is Starting Workflows. Most Systems Still Can't Safely Finish Them.</h1>
+    <p class="cvau-hero-sub">This short audit helps you identify hidden operational, regulatory, and compliance risk.</p>
+    <a class="cvau-btn-primary" href="context.html">Start the Workflow Risk Audit</a>
+  </div>
+</div>
 </body>
 </html>
