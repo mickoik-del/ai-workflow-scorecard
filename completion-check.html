@@ -1,69 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Workflow Criticality</title>
+    <meta charset="UTF-8"><title>Completion Check</title>
     <style>
-        #app-container { max-width: 600px; margin: 50px auto; font-family: sans-serif; line-height: 1.6; }
-        .question-card { background: #ffffff; border: 1px solid #e1e4e8; padding: 25px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        button { padding: 10px 25px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-weight: bold; background: white; }
-        button.selected { background: #007bff; color: white; border-color: #007bff; }
-        .submit-btn { width: 100%; background: #28a745; color: white; padding: 15px; border: none; font-size: 18px; margin-top: 20px; display: none; }
+        body { font-family: 'Inter', sans-serif; background: #f9fafb; padding: 60px 24px; }
+        .card { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; border: 1px solid #e5e7eb; }
+        button { width: 100%; padding: 14px; margin-top: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; background: #2563EB; color: white; }
+        .selected { background: #1E4FA0; }
     </style>
 </head>
 <body>
-
-    <div id="app-container">
-        <h2>Section 2: Workflow Criticality</h2>
-        <p>Since AI isn't involved, we need to understand the nature of your manual or automated workflows.</p>
-
-        <div class="question-card">
-            <p><strong>Q1a:</strong> Do you have workflows where completion is critical?</p>
-            <div class="btn-group">
-                <button id="q1a-yes" onclick="setAnswer('q1a', true)">Yes</button>
-                <button id="q1a-no" onclick="setAnswer('q1a', false)">No</button>
-            </div>
-        </div>
-
-        <div class="question-card">
-            <p><strong>Q1b:</strong> Do you have workflows that require mandatory disclosures, identity capture, PCI/PHI handling, or signatures?</p>
-            <div class="btn-group">
-                <button id="q1b-yes" onclick="setAnswer('q1b', true)">Yes</button>
-                <button id="q1b-no" onclick="setAnswer('q1b', false)">No</button>
-            </div>
-        </div>
-
-        <button id="finish-btn" class="submit-btn" onclick="evaluateNonAIPath()">See Results</button>
-    </div>
-
-    <script>
-        let answers = { q1a: null, q1b: null };
-
-        function setAnswer(question, value) {
-            answers[question] = value;
-            
-            // UI Vibe: Highlight the selected button
-            document.getElementById(`${question}-yes`).className = value === true ? 'selected' : '';
-            document.getElementById(`${question}-no`).className = value === false ? 'selected' : '';
-
-            // Show submit button only when both are answered
-            if (answers.q1a !== null && answers.q1b !== null) {
-                document.getElementById('finish-btn').style.display = 'block';
-            }
+<div class="card">
+    <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin-bottom:20px; width:150px;">
+    <h3>Workflow Criticality</h3>
+    <p style="margin-bottom:20px; color:#6b7280;">Are these workflows completion-critical or regulated (PCI, PHI, Signatures)?</p>
+    <button id="y-btn" onclick="setAnswer(true)">YES, Completion is Critical</button>
+    <button id="n-btn" onclick="setAnswer(false)" style="background:#6b7280;">NO, General Workflows</button>
+</div>
+<script>
+    function setAnswer(isCritical) {
+        if (isCritical) {
+            localStorage.setItem('risk_classification', 'COMPLETION'); //
+            window.location.href = "results.html";
+        } else {
+            window.location.href = "exit-none.html"; //
         }
-
-        function evaluateNonAIPath() {
-            // Logic per PRD Section 8.2 
-            if (answers.q1a === false && answers.q1b === false) {
-                // Scenario: No to both [cite: 87]
-                window.location.href = "exit-none.html";
-            } else {
-                // Scenario: Yes to either [cite: 91]
-                localStorage.setItem('risk_classification', 'COMPLETION');
-                window.location.href = "results.html";
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
