@@ -1,18 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Safe Exit</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Risk Detected - Workflow Risk Audit Results</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f9fafb; text-align: center; padding-top: 100px; }
-        .hero { max-width: 600px; margin: 0 auto; background: #10b981; color: white; padding: 60px; border-radius: 16px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f9fafb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px;
+        }
+
+        h4 {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 16px;
+            color: white;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: auto;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+
+        .hero .subheadline {
+            font-size: 18px;
+            margin: 12px auto;
+            opacity: 0.9;
+        }
+
+        .hero .secondary-note {
+            font-size: 16px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Card Sections */
+        .section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .section h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #111827;
+        }
+
+        .section p {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section ul {
+            list-style: none;
+            margin-top: 12px;
+        }
+
+        .section li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: #6b7280;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .section li:last-child {
+            border-bottom: none;
+        }
+
+        .section li::before {
+            content: '';
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-top: 1px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%2310b981' opacity='.1'/%3E%3Cpath d='M6 10l3 3 5-5' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") center/contain no-repeat;
+        }
+
+        /* Important Note Callout */
+        .important {
+            background-color: transparent;
+            background-image: linear-gradient(135deg, #ecefff 0%, #c8cff6 100%);         
+            padding: 60px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .important h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .important p {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .important p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Closing */
+        .closing {
+            text-align: center;
+            padding: 32px;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-top: 32px;
+        }
+
+        .closing p {
+            font-size: 16px;
+            color: #6b7280;
+        }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="filter: brightness(0) invert(1); width:150px; margin-bottom:20px;">
-        <h1>No Immediate Risk Detected.</h1>
-        <p style="margin-top:20px; opacity:0.9;">Your current workflows don't show meaningful completion or AI-related risk today.</p>
-        <a href="index.html" style="color:white; display:block; margin-top:30px;">Return to Home</a>
+
+    <div class="container">
+        <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+        <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-eyebrow">No Risk Detected</div>
+            <h1>There's Nothing You Need to Fix Right Now.</h1>
+            <p class="subheadline">Based on your answers, your current workflows don't show meaningful completion or AI-related risk.</p>
+            <p class="secondary-note">That's a good outcome.</p>
+        </div>
+
+        <!-- Why This Result -->
+        <div class="section">
+            <h3>Why you're seeing this</h3>
+            <p>You indicated that AI does not currently touch your customer-facing workflows, and that your workflows do not require strict completion control, regulated handling, or high-risk execution.</p>
+            <p>In other words, the conditions that typically create operational or compliance exposure are not present today.</p>
+        </div>
+
+        <!-- What This Means -->
+        <div class="section">
+            <h3>What this means</h3>
+            <ul>
+                <li>You're not exposed to the class of workflow risk this audit is designed to detect</li>
+                <li>There's no immediate need for additional completion controls</li>
+                <li>You don't need to change how your workflows operate right now</li>
+            </ul>
+        </div>
+
+        <!-- Important Note -->
+        <div class="important">
+            <h2>One thing to keep in mind</h2>
+            <p>This result reflects how your workflows operate today. It does not mean risk can't emerge later. If AI is introduced into customer-facing workflows in the future, or if workflows become more regulated or irreversible, the risk profile can change quickly.</p>
+            <p>For now, <a href="https://www.linkedin.com/company/callvu-us" target="_blank" style="text-decoration: underline;">follow Callvu on LinkedIn</a> for the latest in AI CX advancements, and, if your workflows change, you can always revisit this audit.</p>
+        </div>
+
+        <!-- Closing -->
+        <div class="closing">
+            
+        </div>
     </div>
+
 </body>
 </html>

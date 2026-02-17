@@ -1,47 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Diagnostic</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic Questions - Workflow Risk Audit</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f9fafb; padding: 40px; }
-        .card { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .progress { height: 8px; background: #e5e7eb; border-radius: 4px; margin-bottom: 20px; }
-        .fill { height: 100%; background: #2563EB; width: 0%; transition: 0.3s; }
-        button { width: 48%; padding: 15px; margin: 1%; border: none; border-radius: 8px; cursor: pointer; background: #2563EB; color: white; font-weight: 600; }
-    </style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    #app-container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 0 24px;
+    }
+
+    h4 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3F79EF 0%, #2563EB 100%);
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    .question-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    #question-count {
+        color: #9ca3af;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    #question-text {
+        font-size: 22px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0;
+        line-height: 1.4;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    button {
+        flex: 1;
+        padding: 16px 32px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        background: linear-gradient(135deg, #3F79EF 0%, #2563EB 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(63, 121, 239, 0.3);
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-yes {
+        /* Inherits base button styles */
+    }
+
+    .btn-no {
+        /* Inherits base button styles */
+    }
+</style>
 </head>
 <body>
-<div class="card">
-    <div class="progress"><div id="fill" class="fill"></div></div>
-    <h3 id="q-text">Loading...</h3>
-    <div style="margin-top:30px;">
-        <button onclick="answer(true)">YES</button>
-        <button onclick="answer(false)" style="background:#6b7280;">NO</button>
+
+<div id="app-container">
+    <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+    <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Section 2</span></h4>
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div id="quiz-ui">
+        <div class="question-card">
+            <p id="question-count" style="color: #666; font-size: 0.9em;"></p>
+            <h3 id="question-text">Loading diagnostic...</h3>
+            <div class="btn-group">
+                <button id="yes-btn" class="btn-yes" onclick="answer(true)">YES</button>
+                <button id="no-btn" class="btn-no" onclick="answer(false)">NO</button>
+            </div>
+        </div>
     </div>
 </div>
+
 <script>
+    // These match your PRD exactly [cite: 127-155]
     const questions = [
         { q: "Does the workflow require identity verification?", w: 1 },
-        { q: "Does it include mandatory disclosures?", w: 2 },
-        { q: "Does it trigger irreversible state changes?", w: 2 },
-        { q: "Does it fail expensively if a step is skipped?", w: 3 }
-        // ... (Adding others in background logic)
+        { q: "Does the workflow include mandatory disclosures or signatures?", w: 2 },
+        { q: "Does the workflow trigger regulated financial or healthcare actions?", w: 2 },
+        { q: "Does the workflow require an immutable audit trail?", w: 2 },
+        { q: "Does the workflow have zero tolerance for errors or deviation?", w: 2 },
+        { q: "Does the workflow require exact step order and strict validations?", w: 2 },
+        { q: "Does the workflow include branching logic where the wrong branch creates liability?", w: 2 },
+        { q: "Does the workflow trigger irreversible state changes?", w: 2 },
+        { q: "Does the workflow fail expensively if a step is skipped?", w: 3 },
+        { q: "Does the workflow touch an enterprise system?", w: 1 },
+        { q: "Does the workflow require real-time data synchronization?", w: 3 },
+        { q: "Does the workflow write to a system of record?", w: 1 },
+        { q: "Does the workflow break when one dependent system is unavailable?", w: 2 },
+        { q: "Does the workflow produce many edge cases that require human intervention?", w: 2 },
+        { q: "Does the workflow require explicit escalation paths?", w: 2 },
+        { q: "Does the workflow demand predictable rollback behavior?", w: 1 },
+        { q: "Does the workflow handle PCI, PHI, or PII data?", w: 1 },
+        { q: "Does the workflow capture secure documents or signatures?", w: 3 },
+        { q: "Does the workflow include policy enforcement with legal exposure?", w: 2 }
     ];
-    let idx = 0, score = 0;
-    function render() {
-        document.getElementById('q-text').innerText = questions[idx].q;
-        document.getElementById('fill').style.width = (idx/questions.length)*100 + "%";
-    }
-    function answer(yes) {
-        if(yes) score += questions[idx].w;
-        idx++;
-        if(idx < questions.length) render();
-        else {
-            localStorage.setItem('risk_classification', score >= 4 ? 'HIGH' : 'LOW');
-            window.location.href = "results.html";
+
+    let currentIndex = 0;
+    let totalScore = 0;
+
+    function renderQuestion() {
+        if (currentIndex < questions.length) {
+            document.getElementById('question-text').innerText = questions[currentIndex].q;
+            document.getElementById('question-count').innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+            document.getElementById('progress').style.width = `${((currentIndex) / questions.length) * 100}%`;
+        } else {
+            finish();
         }
     }
-    render();
+
+    function answer(isYes) {
+        if (isYes) {
+            totalScore += questions[currentIndex].w; // Add weight if Yes [cite: 123]
+        }
+        currentIndex++;
+        renderQuestion();
+    }
+
+    function finish() {
+        // Scoring logic per PRD Section 12 [cite: 161, 165, 168]
+        let riskClass = totalScore >= 4 ? 'HIGH' : 'LOW';
+        
+        localStorage.setItem('final_score', totalScore);
+        localStorage.setItem('risk_classification', riskClass);
+        
+        window.location.href = "results.html";
+    }
+
+    // Start the vibe
+    renderQuestion();
 </script>
+
 </body>
 </html>

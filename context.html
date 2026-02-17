@@ -3,50 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About You - Workflow Risk Audit</title>
+    <title>Tell Us About Yourself - Workflow Risk Audit</title>
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background: #f9fafb; padding: 60px 24px; }
-    .form-card { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; border: 1px solid #e5e7eb; }
-    label { display: block; font-weight: 600; margin-bottom: 8px; }
-    input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #d1d5db; border-radius: 8px; }
-    button { width: 100%; background: #2563EB; color: white; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .error { color: #dc2626; font-size: 14px; display: none; margin-bottom: 10px; }
-    </style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    #app-container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 0 24px;
+    }
+
+    h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #111827;
+    }
+
+    h4 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 12px;
+    }
+
+    #app-container > p {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 32px;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #111827;
+        font-size: 15px;
+    }
+
+    select, input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        color: #1f2937;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    select:focus, input:focus {
+        outline: none;
+        border-color: #3F79EF;
+        box-shadow: 0 0 0 3px rgba(63, 121, 239, 0.1);
+    }
+
+    select {
+        cursor: pointer;
+        background-color: white;
+    }
+
+    button {
+        background: linear-gradient(135deg, #3F79EF 0%, #2563EB 100%);
+        color: white;
+        padding: 14px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 4px 12px rgba(63, 121, 239, 0.3);
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(63, 121, 239, 0.4);
+    }
+
+    .error-alert {
+        color: #dc2626;
+        font-size: 14px;
+        margin-top: 6px;
+        display: none;
+        font-weight: 500;
+    }
+</style>
 </head>
 <body>
-<div class="form-card">
-    <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin-bottom:20px;">
-    <h4>Workflow Risk Audit</h4>
-    <div class="form-group">
-        <label>Industry</label>
-        <select id="user-industry">
-            <option value="">Select one...</option>
-            <option value="BANKING">Banking</option><option value="INSURANCE">Insurance</option>
-            <option value="TELCO">Telco</option><option value="HEALTHCARE">Healthcare</option>
-            <option value="OTHER">Other</option>
-        </select>
+
+<div id="app-container">
+    <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+    <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Tell us about yourself</span></h4> 
+    
+    <p>This information helps us route you to the correct guidance.</p>
+    
+    <div class="form-card">
+        <div class="form-group">
+            <label for="industry">Industry</label>
+            <select id="user-industry">
+                <option value="">Select one...</option>
+                <option value="BANKING">Banking</option>
+                <option value="INSURANCE">Insurance</option>
+                <option value="TELCO">Telco</option>
+                <option value="UTILITIES">Utilities</option>
+                <option value="HEALTHCARE">Healthcare</option>
+                <option value="MORTGAGE">Mortgage</option>
+                <option value="TRAVEL">Travel & eCommerce</option>
+                <option value="OTHER">Other</option>
+            </select>
+            <div id="industry-error" class="error-alert">Please select an industry.</div>
+        </div>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="user-title" placeholder="e.g. Digital Leader" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Corporate Email</label>
+            <input type="email" id="user-email" placeholder="you@company.com" required>
+            <div id="email-error" class="error-alert">Please enter a professional email address.</div>
+        </div>
+        <button onclick="saveAndContinue()">Next: Workflow Check</button>
     </div>
-    <div class="form-group">
-        <label>Corporate Email</label>
-        <input type="email" id="user-email" placeholder="you@company.com">
-        <div id="email-error" class="error">Please use a professional corporate email.</div>
-    </div>
-    <button onclick="saveAndContinue()">Next: Workflow Check</button>
 </div>
+
 <script>
     function saveAndContinue() {
-        const email = document.getElementById('user-email').value.trim().toLowerCase();
+        const emailInput = document.getElementById('user-email').value.trim().toLowerCase();
         const industry = document.getElementById('user-industry').value;
-        const personal = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+        const title = document.getElementById('user-title').value;
         
-        if (!industry || !email.includes('@') || personal.some(d => email.endsWith(d))) {
-            document.getElementById('email-error').style.display = 'block';
+        // Get error elements
+        const industryError = document.getElementById('industry-error');
+        const emailError = document.getElementById('email-error');
+        
+        // Reset errors
+        industryError.style.display = 'none';
+        emailError.style.display = 'none';
+        
+        let hasError = false;
+        
+        // Check if industry is selected
+        if (industry === "" || industry === null) {
+            industryError.style.display = 'block';
+            hasError = true;
+        }
+        
+        // Basic validation check - show error if email is empty or invalid
+        if (emailInput === "" || !emailInput.includes('@')) {
+            emailError.style.display = 'block';
+            hasError = true;
+        }
+        
+        // List of common personal email providers to block
+        const personalProviders = [
+            'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 
+            'icloud.com', 'me.com', 'aol.com', 'msn.com', 'live.com'
+        ];
+        
+        // Check if the domain is personal (only if email is not empty)
+        if (emailInput !== "" && emailInput.includes('@')) {
+            const isPersonal = personalProviders.some(domain => emailInput.endsWith(domain));
+            
+            // ENFORCEMENT: Show error if personal email is detected 
+            if (isPersonal) {
+                emailError.style.display = 'block';
+                hasError = true;
+            }
+        }
+        
+        // Stop if any errors
+        if (hasError) {
             return;
         }
-        localStorage.setItem('scorecard_user', JSON.stringify({ email, industry }));
+        
+        // SAVE DATA: Use LocalStorage so we can access it on the result page later
+        const userData = { 
+            industry: industry, 
+            title: title, 
+            email: emailInput 
+        };
+        
+        localStorage.setItem('scorecard_user', JSON.stringify(userData));
+        
+        // ROUTE: Move to Primary Question (Q1) 
         window.location.href = "primary-check.html";
     }
 </script>
+
 </body>
 </html>

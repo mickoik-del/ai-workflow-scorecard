@@ -1,31 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Completion Check</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completion Check - Workflow Risk Audit</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f9fafb; padding: 60px 24px; }
-        .card { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; border: 1px solid #e5e7eb; }
-        button { width: 100%; padding: 14px; margin-top: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; background: #2563EB; color: white; }
-        .selected { background: #1E4FA0; }
-    </style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    #app-container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 0 24px;
+    }
+
+    h4 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 12px;
+    }
+
+    #app-container > p {
+        font-size: 16px;
+        color: #6b7280;
+        margin-bottom: 32px;
+    }
+
+    .question-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 32px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .question-card p {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 16px;
+        line-height: 1.5;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 12px;
+    }
+
+    button {
+        flex: 1;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        background: linear-gradient(135deg, #3F79EF 0%, #2563EB 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(63, 121, 239, 0.3);
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    button.selected {
+        background: linear-gradient(135deg, #1E4FA0 0%, #1A3C6E 100%);
+        box-shadow: 0 4px 12px rgba(30, 79, 160, 0.4);
+    }
+
+    .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #3F79EF 0%, #2563EB 100%);
+        color: white;
+        padding: 16px;
+        border: none;
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 24px;
+        display: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 4px 12px rgba(63, 121, 239, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+</style>
 </head>
 <body>
-<div class="card">
-    <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin-bottom:20px; width:150px;">
-    <h3>Workflow Criticality</h3>
-    <p style="margin-bottom:20px; color:#6b7280;">Are these workflows completion-critical or regulated (PCI, PHI, Signatures)?</p>
-    <button id="y-btn" onclick="setAnswer(true)">YES, Completion is Critical</button>
-    <button id="n-btn" onclick="setAnswer(false)" style="background:#6b7280;">NO, General Workflows</button>
+
+<div id="app-container">
+    <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+    <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Section 2</span></h4>
+    <p>Since AI isn't involved, we need to understand the nature of your manual or automated workflows.</p>
+
+    <div class="question-card">
+        <p><strong>Q1a:</strong> Do you have workflows where completion is critical?</p>
+        <div class="btn-group">
+            <button id="yes-btn" onclick="setAnswer('q1a', true, this)">Yes</button>
+            <button id="no-btn" onclick="setAnswer('q1a', false, this)">No</button>
+        </div>
+    </div>
+
+    <div class="question-card">
+        <p><strong>Q1b:</strong> Do you have workflows that require mandatory disclosures, identity capture, PCI/PHI handling, or signatures?</p>
+        <div class="btn-group">
+            <button id="yes-btn" onclick="setAnswer('q1b', true, this)">Yes</button>
+            <button id="no-btn" onclick="setAnswer('q1b', false, this)">No</button>
+        </div>
+    </div>
+
+    <button id="finish-btn" class="submit-btn" onclick="evaluateNonAIPath()">See Results</button>
 </div>
+
 <script>
-    function setAnswer(isCritical) {
-        if (isCritical) {
-            localStorage.setItem('risk_classification', 'COMPLETION'); //
-            window.location.href = "results.html";
+    let answers = { q1a: null, q1b: null };
+
+    function setAnswer(question, value, buttonElement) {
+        answers[question] = value;
+        
+        // Get the parent btn-group and update its buttons
+        const btnGroup = buttonElement.parentElement;
+        const buttons = btnGroup.querySelectorAll('button');
+        
+        // Clear all buttons in this group
+        buttons.forEach(btn => btn.className = '');
+        
+        // Set the selected button
+        buttonElement.className = 'selected';
+
+        // Show submit button only when both are answered
+        if (answers.q1a !== null && answers.q1b !== null) {
+            document.getElementById('finish-btn').style.display = 'block';
+        }
+    }
+
+    function evaluateNonAIPath() {
+        if (answers.q1a === false && answers.q1b === false) {
+            window.location.href = "exit-none.html";
         } else {
-            window.location.href = "exit-none.html"; //
+            localStorage.setItem('risk_classification', 'COMPLETION');
+            window.location.href = "results.html";
         }
     }
 </script>
+
 </body>
 </html>

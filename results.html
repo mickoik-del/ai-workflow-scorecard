@@ -1,39 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Results - Workflow Risk Audit</title>
     <style>
-        body { font-family: 'Inter', sans-serif; text-align: center; padding: 50px; }
-        .hero { padding: 60px; border-radius: 16px; color: white; margin-bottom: 30px; }
-        .high { background: #B91C1C; } .low { background: #2563EB; }
-    </style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f9fafb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    /* Loading State */
+    #loading-container {
+        max-width: 700px;
+        margin: 60px auto;
+        padding: 0 24px;
+    }
+
+    .result-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        text-align: center;
+    }
+
+    .status-msg {
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #6b7280;
+    }
+
+    .loading {
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Results Display */
+    #results-container {
+        display: none;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 60px 24px;
+    }
+
+    h4 {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 60px 40px;
+        border-radius: 16px;
+        color: white;
+    }
+
+    .hero.low {
+        background: linear-gradient(135deg, #3F79EF 0%, #2563EB 100%);
+    }
+
+    .hero.completion {
+        background: linear-gradient(135deg, #E8972B 0%, #D97706 100%);
+    }
+
+    .hero.high {
+        background: linear-gradient(135deg, #D85050 0%, #B91C1C 100%);
+    }
+
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 24px;
+    }
+
+    .hero h1 {
+        font-size: auto;
+        font-weight: 700;
+        margin-bottom: 16px;
+        line-height: 1.2;
+        color: #ffffff;
+    }
+
+    .hero .subheadline {
+        font-size: 18px;
+        margin: 12px auto;
+        opacity: 0.9;
+    }
+
+    .hero .secondary-note {
+        font-size: 16px;
+        opacity: 0.8;
+        font-weight: 500;
+        margin-bottom: 28px;
+    }
+
+    /* CTA Button in Hero */
+    .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white !important;
+        color: #1f2937 !important;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        cursor: pointer;
+        border: none;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .hero-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        background: #1f2937 !important;
+        color: white !important;
+    }
+
+    /* Card Sections */
+    .section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .section h3 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #111827;
+    }
+
+    .section p {
+        font-size: 15px;
+        color: #6b7280;
+        margin-bottom: 12px;
+        line-height: 1.7;
+    }
+
+    .section p:last-child {
+        margin-bottom: 0;
+    }
+
+    .section ul {
+        list-style: none;
+        margin-top: 12px;
+    }
+
+    .section li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 15px;
+        color: #6b7280;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .section li:last-child {
+        border-bottom: none;
+    }
+
+    /* Icon variations by risk level */
+    .section li::before {
+        content: '';
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        margin-top: 1px;
+    }
+
+    .low-risk .section li::before {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%233F79EF' opacity='.1'/%3E%3Cpath d='M6 10l3 3 5-5' stroke='%233F79EF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .completion-risk .section li::before {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%23E8972B' opacity='.1'/%3E%3Cpath d='M6 10l3 3 5-5' stroke='%23E8972B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .high-risk .section li::before {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%23D85050' opacity='.1'/%3E%3Cpath d='M6 10l3 3 5-5' stroke='%23D85050' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    /* "Not Mean" sections get X icons */
+    .section.not-mean li::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9' fill='%233A4B6A' opacity='.08'/%3E%3Cpath d='M7 7l6 6M13 7l-6 6' stroke='%233A4B6A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    /* Important Note Callout */
+    .important {
+        background-color: transparent;
+        background-image: linear-gradient(135deg, #ecefff 0%, #c8cff6 100%);         
+        padding: 60px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+    }
+
+    .important h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .important p {
+        font-size: 15px;
+        line-height: 1.7;
+        margin-bottom: 12px;
+    }
+
+    .important p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Closing */
+    .closing {
+        text-align: center;
+        padding: 32px;
+        background: #f9fafb;
+        border-radius: 12px;
+        margin-top: 32px;
+    }
+
+    .closing p {
+        font-size: 16px;
+        color: #6b7280;
+    }
+</style>
 </head>
 <body>
-    <div id="loading"><h2>Syncing results with HubSpot...</h2></div>
-    <div id="content" style="display:none;">
-        <div id="hero-box" class="hero">
-            <h1 id="title"></h1>
-            <p id="desc"></p>
-        </div>
-        <button onclick="window.print()">Download Report</button>
-    </div>
-<script>
-    async function init() {
-        const user = JSON.parse(localStorage.getItem('scorecard_user'));
-        const risk = localStorage.getItem('risk_classification') || 'LOW';
-        
-        await fetch('/api/submit-to-hubspot', {
-            method: 'POST',
-            body: JSON.stringify({ email: user.email, industry: user.industry, risk })
-        });
 
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-        document.getElementById('hero-box').className = 'hero ' + risk.toLowerCase();
-        document.getElementById('title').innerText = risk + " RISK DETECTED";
-        document.getElementById('desc').innerText = "We've mapped your " + user.industry + " workflow risks.";
+<div id="loading-container">
+    <div class="result-card">
+        <h2 class="loading">Processing your results...</h2>
+        <p id="sync-status" class="status-msg">Syncing with HubSpot</p>
+    </div>
+</div>
+
+<div id="results-container">
+    <!-- Content will be injected here -->
+</div>
+
+<script>
+    // Industry name mapping for display
+    const industryNames = {
+        'BANKING': 'Banking',
+        'INSURANCE': 'Insurance',
+        'TELCO': 'Telecommunications',
+        'UTILITIES': 'Utilities',
+        'HEALTHCARE': 'Healthcare',
+        'MORTGAGE': 'Mortgage',
+        'TRAVEL': 'Travel & eCommerce',
+        'OTHER': 'General'
+    };
+
+    // Results templates for each risk classification
+    const resultsTemplates = {
+        LOW: {
+            heroClass: 'low',
+            eyebrow: 'Some Level of Risk',
+            containerClass: 'low-risk',
+            content: `
+                <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+                <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
+                <div class="hero low">
+                    <div class="hero-eyebrow">Some Level of Risk</div>
+                    <h1>Small Risks Today Can Become Bigger Problems Later.</h1>
+                    <p class="subheadline">Based on your answers, AI touches workflows that show early signs of completion or regulatory risk, but the exposure is not yet systemic.</p>
+                    <p class="secondary-note">Worth paying attention to, not reacting to.</p>
+                    <button id="download-link" class="hero-cta">Download One Pager</button>
+                </div>
+
+                <div class="section">
+                    <h3>Why you're seeing this</h3>
+                    <p>You indicated that AI initiates or guides workflows that include certain risk characteristics, such as identity verification, regulatory disclosures, or interaction with enterprise systems.</p>
+                    <p>While these workflows don't yet exhibit the full combination of traits that create systemic risk, they already operate in a zone where errors, deviations, or incomplete steps can cause problems downstream.</p>
+                </div>
+
+                <div class="section">
+                    <h3>What kind of risk this represents</h3>
+                    <p>Early-stage workflow risk tends to show up as inconsistent completion, manual intervention, edge cases that escalate to humans, or occasional rework.</p>
+                    <p>None of these are catastrophic alone, but in regulated or compliance-sensitive environments, small gaps accumulate into audit findings, customer disputes, or operational drag.</p>
+                </div>
+
+                <div class="section not-mean">
+                    <h3>What this does not mean</h3>
+                    <ul>
+                        <li>You're facing immediate compliance violations</li>
+                        <li>Your workflows are fundamentally broken</li>
+                        <li>AI needs to be pulled back or constrained</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3>What typically works at this stage</h3>
+                    <p>The most effective early intervention is usually to introduce lightweight structure at the point of completion.</p>
+                    <p>This can take the form of micro-apps, guided execution layers, or step-enforced handoffs that ensure critical actions actually complete correctly without creating heavy process overhead.</p>
+                    <p>Risk rarely appears all at once. It accumulates as more steps are automated, more systems are connected, and more decisions become irreversible.</p>
+                    <p>Putting structure in place early is how teams stay ahead of that curve.</p>
+                </div>
+
+                <div class="important">
+                    <h2>What happens next</h2>
+                    <p>You'll receive a short follow-up with practical guidance and an example relevant to your industry.</p>
+                    <p>There's no obligation to take action now. This result is about awareness and optional preparation, not urgency.</p>
+                </div>
+
+                <div class="closing"></div>
+            `
+        },
+        COMPLETION: {
+            heroClass: 'completion',
+            eyebrow: 'Completion Risk Detected',
+            containerClass: 'completion-risk',
+            content: `
+                <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+		<h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
+                <div class="hero completion">
+                    <div class="hero-eyebrow">Completion Risk Detected</div>
+                    <h1>Your Risk Isn't AI. It's Completion.</h1>
+                    <p class="subheadline">Even without AI in the loop, some workflows demand strict control to avoid errors, rework, or regulatory exposure.</p>
+                    <p class="secondary-note">This is a bounded, but real, class of risk.</p>
+                    <button id="download-link" class="hero-cta">Download One Pager</button>
+                </div>
+
+                <div class="section">
+                    <h3>Why you're seeing this</h3>
+                    <p>You indicated that AI does not currently initiate your customer-facing workflows, but that some workflows are completion-critical or require regulated handling.</p>
+                    <p>That combination creates risk not because of intelligence or automation, but because failure at the point of completion has consequences.</p>
+                </div>
+
+                <div class="section">
+                    <h3>What kind of risk this represents</h3>
+                    <p>Workflows that require identity verification, disclosures, signatures, secure document handling, or exact step order can fail even when humans are involved.</p>
+                    <p>Common failure modes include skipped steps, invalid data, missing evidence, manual rework, or downstream system inconsistencies.</p>
+                    <p>These failures are usually silent until they surface as compliance issues, customer disputes, or operational backlogs.</p>
+                </div>
+
+                <div class="section not-mean">
+                    <h3>What this does not mean</h3>
+                    <ul>
+                        <li>It does not mean you need AI controls or a full automation platform</li>
+                        <li>It does not mean your workflows are fundamentally broken</li>
+                        <li>It does not mean you need to redesign everything end to end</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3>What typically works at this stage</h3>
+                    <p>For bounded, completion-heavy workflows, the most effective approach is usually a controlled micro-app or guided execution layer.</p>
+                    <p>This kind of structure enforces step order, validates inputs, guarantees disclosures and signatures, and produces reliable evidence without introducing unnecessary complexity.</p>
+                </div>
+
+                <div class="important">
+                    <h2>What happens next</h2>
+                    <p>You'll receive a short follow-up with practical guidance and an example relevant to your industry.</p>
+                    <p>There's no obligation to take action. The goal is simply to make completion risk visible and manageable.</p>
+                </div>
+
+                <div class="closing"></div>
+            `
+        },
+        HIGH: {
+            heroClass: 'high',
+            eyebrow: 'High Risk',
+            containerClass: 'high-risk',
+            content: `
+                    <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
+                    <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
+                <div class="hero high">
+                    <div class="hero-eyebrow">High Risk</div>
+                    <h1>AI Is Touching Workflows Where Failure Has Consequences.</h1>
+                    <p class="subheadline">Based on your answers, some AI-initiated workflows operate in conditions where errors, deviations, or partial completion can create real operational, regulatory, or legal exposure.</p>
+                    <p class="secondary-note">This is not hypothetical risk.</p>
+                    <button id="download-link" class="hero-cta">Download One Pager</button>
+                </div>
+
+                <div class="section">
+                    <h3>Why you're seeing this</h3>
+                    <p>You indicated that AI initiates or guides customer-facing workflows that combine multiple high-risk characteristics.</p>
+                    <p>These include strict step order, regulated actions, irreversible state changes, system-of-record writes, or zero tolerance for execution errors.</p>
+                    <p>When these conditions exist together, AI-driven initiation without a dedicated completion layer creates systemic risk.</p>
+                </div>
+
+                <div class="section">
+                    <h3>What kind of risk this represents</h3>
+                    <p>In high-consequence workflows, failure is rarely obvious in the moment.</p>
+                    <p>Risk emerges when steps are skipped, branches are misrouted, data is partially written, or evidence is incomplete even if the workflow appears to have finished.</p>
+                    <p>Because these workflows often touch regulated systems or customer entitlements, issues tend to surface later as audit findings, customer disputes, compliance breaches, or operational incidents.</p>
+                </div>
+
+                <div class="section">
+                    <h3>Why AI changes the equation</h3>
+                    <p>AI systems are probabilistic by nature. They are not designed to guarantee exact step order, enforce policy deterministically, or produce immutable evidence by default.</p>
+                    <p>As soon as AI is responsible for initiating or progressing high-stakes workflows, the risk profile changes from localized execution errors to systemic exposure.</p>
+                    <p>This is not a failure of AI capability. It is a mismatch between probabilistic systems and deterministic requirements.</p>
+                </div>
+
+                <div class="section not-mean">
+                    <h3>What this does not mean</h3>
+                    <ul>
+                        <li>AI should be removed from your workflows</li>
+                        <li>Your automation strategy is fundamentally flawed</li>
+                        <li>Every workflow needs to be rebuilt from scratch</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h3>What typically works at this stage</h3>
+                    <p>When AI initiates workflows with regulatory or irreversible consequences, teams typically introduce a dedicated completion and compliance layer.</p>
+                    <p>This layer separates intelligence from execution. AI can guide and reason, while completion is handled through deterministic, governed steps.</p>
+                    <p>The goal is not to slow workflows down, but to ensure they finish correctly, consistently, and with audit-ready evidence.</p>
+                </div>
+
+                <div class="important">
+                    <h2>What happens next</h2>
+                    <p>You'll receive a follow-up with material relevant to your industry that explains how teams address this class of risk in practice.</p>
+                    <p>There's no immediate action required. But this result indicates an area where inaction tends to become more expensive over time.</p>
+                </div>
+
+                <div class="closing"></div>
+            `
+        }
+    };
+
+    async function initResults() {
+        // Get user data and risk classification
+        const user = JSON.parse(localStorage.getItem('scorecard_user')) || { industry: 'OTHER', email: 'unknown' };
+        const risk = localStorage.getItem('risk_classification') || 'LOW';
+        const industry = user.industry || 'OTHER';
+        const assetName = `${risk}-ONEPAGER-${industry}`;
+
+        // Sync with HubSpot
+        await sendToHubSpot(user, risk, assetName);
+
+        // Display results
+        displayResults(risk, industry);
     }
-    init();
+
+    async function sendToHubSpot(user, risk, asset) {
+        const statusEl = document.getElementById('sync-status');
+        
+        const payload = {
+            email: user.email,
+            industry: user.industry,
+            title: user.title,
+            risk: risk,
+            assetName: asset
+        };
+
+        try {
+            const response = await fetch('/api/submit-to-hubspot', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                statusEl.innerText = "✓ Results synced successfully";
+                console.log("HubSpot Sync Successful");
+            } else {
+                const errorData = await response.json();
+                statusEl.innerText = "✓ Processing complete (sync logged)";
+                console.error("HubSpot Sync Error:", errorData);
+            }
+        } catch (err) {
+            statusEl.innerText = "✓ Processing complete";
+            console.error("Network Error:", err);
+        }
+
+        // Small delay to show status
+        await new Promise(resolve => setTimeout(resolve, 800));
+    }
+
+    function displayResults(risk, industryCode) {
+        const template = resultsTemplates[risk];
+        const resultsContainer = document.getElementById('results-container');
+        const loadingContainer = document.getElementById('loading-container');
+
+        // Get display-friendly industry name
+        const industryName = industryNames[industryCode] || industryCode;
+
+        // Create container with appropriate class
+        const containerDiv = document.createElement('div');
+        containerDiv.className = `container ${template.containerClass}`;
+        containerDiv.innerHTML = template.content;
+
+        // Insert and display results
+        resultsContainer.appendChild(containerDiv);
+        
+        // Update download link text dynamically
+        document.getElementById('download-link').innerText = `Get ${industryName} Risk Analysis`;
+        
+        // Hide loading, show results
+        loadingContainer.style.display = 'none';
+        resultsContainer.style.display = 'block';
+    }
+
+    // Start the process
+    initResults();
 </script>
+
 </body>
 </html>
