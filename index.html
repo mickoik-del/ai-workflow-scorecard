@@ -8,17 +8,19 @@
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
       .cvau-wrap * { box-sizing: border-box; margin: 0; padding: 0; }
       .cvau-wrap { font-family: 'Inter', sans-serif; max-width: 860px; margin: 10px auto; padding: 0 24px 80px; }
-      .cvau-hero { background: linear-gradient(150deg, #1A3C6E 0%, #1E4FA0 55%, #5B3FA6 100%); border-radius: 16px; padding: 64px 56px 60px; margin-bottom: 40px; color: white; }
-      .cvau-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: #FFFFFF; color: #000000 !important; font-weight: 600; padding: 15px 28px; border-radius: 8px; text-decoration: none; }
-      /* ... Rest of Chelsea's CSS ... */
+      .cvau-hero { background: linear-gradient(150deg, #1A3C6E 0%, #1E4FA0 55%, #5B3FA6 100%); border-radius: 16px; padding: 64px 56px 60px; margin-bottom: 40px; color: white; position: relative; overflow: hidden; }
+      .cvau-hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; padding: 6px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 28px; }
+      .cvau-hero h1 { font-size: 40px; font-weight: 700; line-height: 1.2; margin-bottom: 20px; }
+      .cvau-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: #FFF; color: #000 !important; font-size: 15px; font-weight: 600; padding: 15px 28px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 <div class="cvau-wrap">
   <img src="https://callvu.com/wp-content/uploads/2021/08/callvu-logo.svg" style="margin:20px;">
   <div class="cvau-hero">
+    <div class="cvau-hero-eyebrow">Workflow Risk Audit</div>
     <h1>AI Is Starting Workflows. Most Systems Still Can't Safely Finish Them.</h1>
-    <p class="cvau-hero-sub">This short audit helps you identify hidden operational, regulatory, and compliance risk.</p>
+    <p style="margin-bottom:30px; opacity:0.8;">Identify hidden operational, regulatory, and compliance risk in 3 minutes.</p>
     <a class="cvau-btn-primary" href="context.html">Start the Workflow Risk Audit</a>
   </div>
 </div>
