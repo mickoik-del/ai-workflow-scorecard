@@ -46,6 +46,7 @@ export default async function (req, res) {
             jobtitle: body.title,
             scorecard_risk_level: body.risk,
             scorecard_asset: body.assetName,
+            scorecard_message: body.message,
             lifecyclestage: lifecycleStage
         };
         
