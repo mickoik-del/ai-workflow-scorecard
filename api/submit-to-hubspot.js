@@ -47,7 +47,7 @@ export default async function (req, res) {
             scorecard_risk_level: body.risk,
             scorecard_asset: body.assetName,
             scorecard_message: body.message,
-            lifecyclestage: lifecycleStage
+            lifecycle_stage__new_: lifecycleStage
         };
         
         // 3. If contact exists, UPDATE it
