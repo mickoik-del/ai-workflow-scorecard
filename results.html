@@ -302,6 +302,7 @@
             heroClass: 'low',
             eyebrow: 'Some Level of Risk',
             containerClass: 'low-risk',
+            message: "AI is already involved in some of your customer-facing workflows, but the associated completion risk appears limited and manageable at this stage.\n\nThis indicates a real but bounded exposure: small execution gaps, skipped steps, or inconsistent handoffs can occur, yet they are unlikely to create immediate regulatory or irreversible impact today.\n\nThe implication is not that AI usage should be reduced or reversed. Rather, as AI continues to expand into more consequential workflows, introducing light structural controls around execution can prevent risk from accumulating quietly over time.",
             content: `
                 <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
                 <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
@@ -355,6 +356,7 @@
             heroClass: 'completion',
             eyebrow: 'Completion Risk Detected',
             containerClass: 'completion-risk',
+            message: "Your workflows do not currently rely on AI to initiate execution, but some of them are completion-critical or subject to regulated handling.\n\nThat creates a real, bounded risk: failures at the point of completion can lead to errors, rework, missing evidence, or compliance exposure even when everything upstream works as expected.\n\nThis is not a signal to overhaul your systems or introduce AI controls. It's an indication that certain workflows benefit from tighter, guided execution to ensure steps are completed in the right order and with the required validations.",
             content: `
                 <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
 		<h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
@@ -407,6 +409,7 @@
             heroClass: 'high',
             eyebrow: 'High Risk',
             containerClass: 'high-risk',
+            message: "AI is initiating or progressing workflows where failure, deviation, or partial completion can create real operational, regulatory, or legal consequences.\n\nThis indicates systemic risk. When probabilistic systems initiate workflows that require strict step order, regulated actions, irreversible state changes, or system-of-record writes, execution errors are no longer isolated. They tend to surface later as compliance findings, customer disputes, audit issues, or operational incidents.\n\nThis is not a judgment on your AI strategy. It is a structural mismatch between how AI operates and how high-consequence workflows must be completed. In these conditions, separating intelligence from deterministic, governed execution is what prevents risk from compounding over time.",
             content: `
                     <img src="callvu-logo.svg" style="margin:20px 0px; max-width: 150px;">
                     <h4>Workflow Risk Audit: <span style="color:#234FA2 !important;">Results</span></h4>
@@ -472,15 +475,18 @@
         const risk = localStorage.getItem('risk_classification') || 'LOW';
         const industry = user.industry || 'OTHER';
         const assetName = `${risk}-ONEPAGER-${industry}`;
+        
+        // Get the message for this risk level
+        const message = resultsTemplates[risk].message;
 
         // Sync with HubSpot
-        await sendToHubSpot(user, risk, assetName);
+        await sendToHubSpot(user, risk, assetName, message);
 
         // Display results
         displayResults(risk, industry);
     }
 
-    async function sendToHubSpot(user, risk, asset) {
+    async function sendToHubSpot(user, risk, asset, message) {
         const statusEl = document.getElementById('sync-status');
         
         const payload = {
@@ -488,7 +494,8 @@
             industry: user.industry,
             title: user.title,
             risk: risk,
-            assetName: asset
+            assetName: asset,
+            message: message
         };
 
         try {
