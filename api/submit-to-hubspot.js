@@ -119,10 +119,10 @@ export default async function (req, res) {
         
         console.log('[INFO] Processing submission for:', email, 'Risk:', risk);
         
-        // Determine lifecycle stage
-        let lifecycleStage = 'marketingqualifiedlead'; // Default for LOW
+        // Determine lifecycle stage - use display labels, not internal values
+        let lifecycleStage = 'Marketing Qualified Lead'; // Default for LOW
         if (risk === 'HIGH' || risk === 'COMPLETION') {
-            lifecycleStage = 'salesqualifiedlead';
+            lifecycleStage = 'Sales Qualified Lead';
         }
         
         console.log('[INFO] Lifecycle stage:', lifecycleStage);
